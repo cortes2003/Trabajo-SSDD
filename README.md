@@ -1,40 +1,53 @@
-# Spotifice
+# Despliegue de Spotifice con IceGrid
 
-This repository contains the starter code for the **Spotifice** application.
-Spotifice is a distributed multimedia streaming system built with **ZeroC Ice** and **Python**.
+## Descripción del Trabajo
+Este proyecto consiste en el despliegue de la aplicación distribuida **Spotifice** (versión Hito 1 o superior) utilizando **IceGrid**, la herramienta de gestión de aplicaciones distribuidas del middleware ZeroC Ice.
 
-## Requirements
+El objetivo es gestionar la ejecución de los servicios en múltiples nodos, asegurando la disponibilidad y escalabilidad del sistema musical.
 
-To run this application, you need:
+### Información
+* **Asignatura:** Sistemas Distribuidos
+* **Grado:** Ingeniería Informática
+* **Curso:** 2025-2026
+* **Fecha:** Noviembre 2025
 
-- **Python ≥ 3.10**
-- **ZeroC Ice 3.7**
-- All Python dependencies listed in the `DEPENDS` file
-- A recent GNU/Linux distribution such as **Debian 12 (Bookworm)** or **Ubuntu 23.04** or newer
+### Autores
+* Alberto Cortés Herranz
+* Adrián Caballero Camacho
 
-## Contents
+---
 
-This repository has been cloned as part of an GitHub Classroom assignment. See lab statement in the Moodle course for details.
+## Nivel de Despliegue Seleccionado
+El despliegue realizado corresponde al siguiente nivel de dificultad:
 
-## Download media files
+-  **Nivel Básico:** Despliegue en al menos 2 nodos IceGrid.
+-  **Nivel Intermedio:** Incluye lo anterior + 2 MediaServers + 2 MediaRenderers + uso de **IcePatch2** para distribución de código. Despliegue en 2 nodos lógicos independientes (VMs permitidas).
+-  **Nivel Avanzado:** Todo lo anterior, desplegado sobre al menos **2 nodos físicos independientes**.
 
-The `Makefile` will download example music files:
+---
 
+## Requisitos Previos
+Para ejecutar este despliegue es necesario tener instalado:
+* **ZeroC Ice** (Versión 3.7 o compatible).
+* **Java Development Kit (JDK)** (Para los servicios base).
+* **Python 3** (Si se utilizan componentes en Python).
+
+---
+
+## Estructura del Proyecto
+El repositorio contiene los ficheros necesarios para la configuración y arranque:
+
+* `/config`: Archivos XML de configuración de los nodos y descriptores de aplicación IceGrid.
+* `/scripts`: Scripts de arranque para el Registry y los Nodos.
+* `/src`: Código fuente de la aplicación (Cliente, Servidor, MediaServer, MediaRender).
+* `/icepatch`: (Solo nivel Intermedio/Avanzado) Directorio para la distribución de binarios.
+
+---
+
+## Instrucciones de Despliegue y Puesta en Marcha 
+
+### 1. Compilación
+Antes de desplegar, asegurarse de que los binarios están generados:
 ```bash
-spotifice$ make
-```
-
-## Usage
-
-You can start the application (using `tmux`):
-
-```bash
-spotifice$ ./run.sh
-```
-
-That executes `media_server`, `media_render` and `media_control` with the proper configuration.
-
-
-## Authors
-
-Developed by the *Distributed Systems* course teachers at **UCLM-ESI**.
+# Ejemplo de compilación (ajustar según tu build system, ej: gradle, make)
+./gradlew build
