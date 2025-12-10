@@ -1,0 +1,52 @@
+<icegrid>
+  <application name="SpotificeApp">
+    <!-- Definición del servidor MediaServer en node1 -->
+    <server-template id="MediaServerTemplate">
+      <parameter name="index"/>
+      <server id="MediaServer-${index}" exe="python3" activation="on-demand" pwd="${application.distrib}">
+        <adapter name="MediaServerAdapter" endpoints="tcp" id="MediaServerAdapter-${index}">
+          <object identity="mediaServer${index}" type="::Spotifice::MediaServer"/>
+        </adapter>
+        <option>media_server.py</option>
+        <property name="Ice.StdErr" value="mediaserver${index}.log"/>
+        <property name="Ice.StdOut" value="mediaserver${index}.log"/>
+        <property name="MediaServer.Content" value="media"/>
+        <property name="MediaServer.Playlists" value="playlists"/>
+      </server>
+    </server-template>
+
+    <!-- Definición del servidor MediaRender en node2 -->
+    <server-template id="MediaRenderTemplate">
+      <parameter name="index"/>
+      <server id="MediaRender-${index}" exe="python3" activation="on-demand" pwd="${application.distrib}">
+        <adapter name="MediaRenderAdapter" endpoints="tcp" id="MediaRenderAdapter-${index}">
+          <object identity="mediaRender${index}" type="::Spotifice::MediaRender"/>
+        </adapter>
+        <option>media_render.py</option>
+        <property name="Ice.StdErr" value="mediarender${index}.log"/>
+        <property name="Ice.StdOut" value="mediarender${index}.log"/>
+      </server>
+    </server-template>
+
+    <!-- Nodo 1: MediaServer -->
+    <node name="node1">
+      <server-instance template="MediaServerTemplate" index="1"/>
+    </node>
+
+    <!-- Nodo 2: MediaRender -->
+    <node name="node2">
+      <server-instance template="MediaRenderTemplate" index="1"/>
+    </node>
+
+    <!-- Propiedades globales -->
+    <properties id="SpotificeProperties">
+      <property name="Ice.Default.Locator" value="SpotificeGrid/Locator:tcp -h localhost -p 4061"/>
+    </properties>
+
+    <!-- Variables de distribución -->
+    <distrib>
+      <!-- Directorio donde están los scripts Python -->
+      <directory>.</directory>
+    </distrib>
+  </application>
+</icegrid>

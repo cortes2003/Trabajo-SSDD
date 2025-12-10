@@ -7,3 +7,10 @@ __pycache__
 *.class
 .vscode/
 .github
+
+# IceGrid generated directories
+registry_data/
+node1_data/
+node2_data/
+node1_output/
+node2_output/
