@@ -2,6 +2,7 @@
 # Script maestro para iniciar toda la infraestructura IceGrid
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 echo "==================================="
 echo "  Iniciando Spotifice con IceGrid"
@@ -17,11 +18,26 @@ check_process() {
 echo "Limpiando procesos anteriores..."
 pkill -f icegridregistry 2>/dev/null
 pkill -f icegridnode 2>/dev/null
+pkill -f admin_verifier.py 2>/dev/null
 sleep 2
+
+# 0. Iniciar verificador de permisos
+echo ""
+echo "[0/5] Iniciando verificador de permisos..."
+"$PROJECT_DIR/config/admin_verifier.py" &
+VERIFIER_PID=$!
+sleep 2
+
+if check_process "admin_verifier.py"; then
+    echo "✓ Verificador de permisos iniciado (PID: $VERIFIER_PID)"
+else
+    echo "✗ Error: Verificador de permisos no pudo iniciarse"
+    exit 1
+fi
 
 # 1. Iniciar Registry
 echo ""
-echo "[1/4] Iniciando Registry..."
+echo "[1/5] Iniciando Registry..."
 "$SCRIPT_DIR/start-registry.sh" &
 REGISTRY_PID=$!
 sleep 3
@@ -35,7 +51,7 @@ fi
 
 # 2. Iniciar Node 1
 echo ""
-echo "[2/4] Iniciando Node 1..."
+echo "[2/5] Iniciando Node 1..."
 "$SCRIPT_DIR/start-node1.sh" &
 NODE1_PID=$!
 sleep 2
@@ -49,7 +65,7 @@ fi
 
 # 3. Iniciar Node 2
 echo ""
-echo "[3/4] Iniciando Node 2..."
+echo "[3/5] Iniciando Node 2..."
 "$SCRIPT_DIR/start-node2.sh" &
 NODE2_PID=$!
 sleep 2
@@ -63,8 +79,8 @@ fi
 
 # 4. Desplegar aplicación
 echo ""
-echo "[4/4] Desplegando aplicación..."
-"$SCRIPT_DIR/deploy-app.sh"
+echo "[4/5] Desplegando aplicación..."
+"$SCRIPT_DIR/deploy_expect.py"
 
 if [ $? -eq 0 ]; then
     echo ""
@@ -73,6 +89,7 @@ if [ $? -eq 0 ]; then
     echo "==================================="
     echo ""
     echo "PIDs de procesos:"
+    echo "  Verifier: $VERIFIER_PID"
     echo "  Registry: $REGISTRY_PID"
     echo "  Node 1:   $NODE1_PID"
     echo "  Node 2:   $NODE2_PID"

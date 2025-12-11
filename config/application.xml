@@ -3,26 +3,26 @@
     <!-- Definición del servidor MediaServer en node1 -->
     <server-template id="MediaServerTemplate">
       <parameter name="index"/>
-      <server id="MediaServer-${index}" exe="python3" activation="on-demand" pwd="${application.distrib}">
-        <adapter name="MediaServerAdapter" endpoints="tcp" id="MediaServerAdapter-${index}">
+      <server id="MediaServer-${index}" exe="python3" activation="always" pwd="/home/alberto/Escritorio/Curso 2526/SSDD/Trabajo SSDD/Trabajo-SSDD">
+        <adapter name="MediaServerAdapter" endpoints="tcp" register-process="true">
           <object identity="mediaServer${index}" type="::Spotifice::MediaServer"/>
         </adapter>
-        <option>media_server.py</option>
+        <option>./media_server.py</option>
         <property name="Ice.StdErr" value="mediaserver${index}.log"/>
         <property name="Ice.StdOut" value="mediaserver${index}.log"/>
-        <property name="MediaServer.Content" value="media"/>
-        <property name="MediaServer.Playlists" value="playlists"/>
+        <property name="MediaServer.Content" value="/home/alberto/Escritorio/Curso 2526/SSDD/Trabajo SSDD/Trabajo-SSDD/media"/>
+        <property name="MediaServer.Playlists" value="/home/alberto/Escritorio/Curso 2526/SSDD/Trabajo SSDD/Trabajo-SSDD/playlists"/>
       </server>
     </server-template>
 
     <!-- Definición del servidor MediaRender en node2 -->
     <server-template id="MediaRenderTemplate">
       <parameter name="index"/>
-      <server id="MediaRender-${index}" exe="python3" activation="on-demand" pwd="${application.distrib}">
-        <adapter name="MediaRenderAdapter" endpoints="tcp" id="MediaRenderAdapter-${index}">
+      <server id="MediaRender-${index}" exe="python3" activation="always" pwd="/home/alberto/Escritorio/Curso 2526/SSDD/Trabajo SSDD/Trabajo-SSDD">
+        <adapter name="MediaRenderAdapter" endpoints="tcp" register-process="true">
           <object identity="mediaRender${index}" type="::Spotifice::MediaRender"/>
         </adapter>
-        <option>media_render.py</option>
+        <option>./media_render.py</option>
         <property name="Ice.StdErr" value="mediarender${index}.log"/>
         <property name="Ice.StdOut" value="mediarender${index}.log"/>
       </server>
