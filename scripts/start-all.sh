@@ -6,6 +6,9 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 echo "==================================="
 echo "  Iniciando Spotifice con IceGrid"
+echo "  Nivel Intermedio: 2 Nodos"
+echo "  - Node 1: IcePatch2 + 2 MediaServers"
+echo "  - Node 2: 2 MediaRenders"
 echo "==================================="
 
 # Función para verificar si un proceso está corriendo
@@ -21,8 +24,9 @@ pkill -f icegridnode 2>/dev/null
 pkill -f admin_verifier.py 2>/dev/null
 sleep 2
 
-# 0. Iniciar verificador de permisos
+# 1. Iniciar verificador de permisos
 echo ""
+echo "[1/6] Iniciando verificador de permisos..."
 echo "[0/5] Iniciando verificador de permisos..."
 "$PROJECT_DIR/config/admin_verifier.py" &
 VERIFIER_PID=$!
@@ -35,9 +39,9 @@ else
     exit 1
 fi
 
-# 1. Iniciar Registry
+# 2. Iniciar Registry
 echo ""
-echo "[1/5] Iniciando Registry..."
+echo "[2/5] Iniciando Registry..."
 "$SCRIPT_DIR/start-registry.sh" &
 REGISTRY_PID=$!
 sleep 3
@@ -49,9 +53,9 @@ else
     exit 1
 fi
 
-# 2. Iniciar Node 1
+# 3. Iniciar Node 1
 echo ""
-echo "[2/5] Iniciando Node 1..."
+echo "[3/5] Iniciando Node 1 (IcePatch2 + 2 MediaServers)..."
 "$SCRIPT_DIR/start-node1.sh" &
 NODE1_PID=$!
 sleep 2
@@ -63,9 +67,9 @@ else
     exit 1
 fi
 
-# 3. Iniciar Node 2
+# 4. Iniciar Node 2
 echo ""
-echo "[3/5] Iniciando Node 2..."
+echo "[4/5] Iniciando Node 2 (2 MediaRenders)..."
 "$SCRIPT_DIR/start-node2.sh" &
 NODE2_PID=$!
 sleep 2
@@ -77,9 +81,9 @@ else
     exit 1
 fi
 
-# 4. Desplegar aplicación
+# 5. Desplegar aplicación
 echo ""
-echo "[4/5] Desplegando aplicación..."
+echo "[5/5] Desplegando aplicación..."
 "$SCRIPT_DIR/deploy_expect.py"
 
 if [ $? -eq 0 ]; then

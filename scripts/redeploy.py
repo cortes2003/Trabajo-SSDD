@@ -24,10 +24,19 @@ def main():
         # Esperar el prompt de icegridadmin
         child.expect('>>>')
         
-        # Remover la aplicación existente
-        print("\nRemoving existing application...")
-        child.sendline("application remove SpotificeApp")
-        child.expect('>>>')
+        # Remover la aplicación existente (si existe)
+        print("\nVerificando aplicación existente...")
+        child.sendline("application list")
+        index = child.expect(['>>>', pexpect.TIMEOUT], timeout=5)
+        
+        output_before_prompt = child.before
+        if 'SpotificeApp' in str(output_before_prompt):
+            print("Removiendo aplicación existente...")
+            child.sendline("application remove SpotificeApp")
+            child.expect('>>>')
+            print("✓ Aplicación removida")
+        else:
+            print("No hay aplicación existente para remover")
         
         # Desplegar la aplicación
         print("\nDesplegando aplicación...")

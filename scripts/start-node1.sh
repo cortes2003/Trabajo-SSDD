@@ -12,5 +12,17 @@ echo "Directorio de configuración: $CONFIG_DIR"
 mkdir -p "$PROJECT_DIR/node1_data"
 mkdir -p "$PROJECT_DIR/node1_output"
 
-# Iniciar el nodo
-icegridnode --Ice.Config="$CONFIG_DIR/node1.config"
+# Iniciar el nodo en background
+icegridnode --Ice.Config="$CONFIG_DIR/node1.config" > /dev/null 2>&1 &
+
+# Guardar PID y esperar
+NODE_PID=$!
+sleep 2
+
+# Verificar que esté corriendo
+if pgrep -f "icegridnode.*node1" > /dev/null; then
+    echo "✓ Node 1 iniciado (PID: $NODE_PID)"
+else
+    echo "✗ Error: Node 1 no se inició"
+    exit 1
+fi

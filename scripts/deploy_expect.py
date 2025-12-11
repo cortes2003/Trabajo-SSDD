@@ -31,21 +31,22 @@ def main():
         
         print("✓ Aplicación desplegada exitosamente")
         
-        # Iniciar los servidores
-        print("\nIniciando servidores...")
-        child.sendline("server start MediaServer-1")
-        child.expect('>>>')
-        print("✓ MediaServer-1 iniciado")
+        # Los servidores con activation="always" se inician automáticamente
+        print("\n✓ Servidores configurados con activation='always'")
+        print("  Se iniciarán automáticamente...")
         
-        child.sendline("server start MediaRender-1")
-        child.expect('>>>')
-        print("✓ MediaRender-1 iniciado")
+        # Esperar un momento para que los servidores se inicien
+        import time
+        time.sleep(3)
         
         # Salir
         child.sendline("exit")
         child.wait()
         
         print("\n✓ Despliegue completado")
+        print("\nServidores desplegados:")
+        print("  - Node 1: IcePatch2/server, MediaServer-1, MediaServer-2")
+        print("  - Node 2: MediaRender-1, MediaRender-2")
         return 0
         
     except pexpect.TIMEOUT:
