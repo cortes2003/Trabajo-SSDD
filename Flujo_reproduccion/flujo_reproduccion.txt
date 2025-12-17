@@ -1,0 +1,43 @@
+- Flujo detallado
+
+1. El Cliente invoca load_track(track_id) en MediaRender
+Esta llamada se realiza mediante una invocación remota Ice.
+
+2. MediaRender solicita información de la pista al MediaServer
+
+MediaRender llama a get_track_info(track_id) en MediaServer.
+
+MediaServer busca la pista en su biblioteca (self.library) y devuelve un objeto TrackInfo.
+
+3. MediaRender almacena la pista como pista actual
+
+Guarda la información recibida en self.current_track.
+
+4. MediaRender solicita la apertura del stream de audio
+Llama a open_stream(track_id, render_identity) en MediaServer.
+
+MediaServer crea internamente un StreamedFile asociado a ese render y devuelve OK.
+
+5. MediaRender confirma la carga al Cliente
+
+Devuelve OK al Cliente indicando que la pista está lista.
+
+6. El Cliente invoca play() en MediaRender
+
+MediaRender inicializa el GstPlayer.
+
+Se lanza un hilo interno encargado de solicitar fragmentos de audio.
+
+7. Bucle de streaming de audio (en un thread del MediaRender)
+
+MediaRender solicita repetidamente get_audio_chunk() al MediaServer.
+
+MediaServer responde con bloques de audio (bytes[4096]).
+
+Este intercambio se repite varias veces.
+
+8. Fin del stream
+
+MediaServer devuelve bytes[0] indicando fin del archivo.
+
+MediaRender emite la señal track_exhausted.
