@@ -41,3 +41,46 @@ Este intercambio se repite varias veces.
 MediaServer devuelve bytes[0] indicando fin del archivo.
 
 MediaRender emite la señal track_exhausted.
+
+
+- Ejecución del programa
+- Preparación
+1. Limpiar estado previo
+    ./scripts/stop_python.py
+    rm -rf registry_data/ node*_data/ *.log
+
+2. Asegurar que media existe
+    make media
+
+3. Iniciar sistema
+    ./scripts/start-all.sh
+
+- Flujo de ejecución
+1. Mostrar procesos corriendo:
+    pgrep -fa icegrid
+
+2. Verificar estado con icegridadmin:
+    icegridadmin --Ice.Default.Locator="SpotificeGrid/Locator:tcp -h localhost -p 4061" \
+     -u admin -p admin
+
+    >>> application list
+    >>> server list
+    >>> server state MediaServer-1
+    >>> node list
+    >>> node show node1
+    >>> server start MediaServer-1
+    >>> server stop MediaServer-1
+    >>> exit
+
+3. Mostrar logs:
+    cat mediaserver1.log
+    cat mediarender1.log
+
+4. Ejecutar cliente de línea de comandos:
+    ./media_control_grid.py
+
+5. Ejecutar interfaz gráfica:
+    python3 media_control_v1.py control_gui.config
+
+6. Simular fallo de servidor:
+    pkill -9 -f media_server.py
